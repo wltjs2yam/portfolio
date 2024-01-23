@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin.mapper.AdminMapper">
+
+	<select id="getAdminByMid" resultType="AdminVo">
+		select * from admin where mid = #{mid}
+	</select>
+	
+	<select id="getAdminByMidx" resultType="AdminVo">
+		select * from admin where midx = #{midx}
+	</select>
+	
+	<insert id="signUp">
+		insert into admin values ('0',#{mid},#{mpass},#{mname},#{memail},#{mhp},#{mselect1},#{mselect2},'N',now(),0)
+	</insert>
+	
+	
+	<update id="plusAdminMcount">
+		update admin set mcount = mcount + 1 where midx = #{midx}
+	</update>
+	
+	<select id="getAdminList" resultType="AdminVo">
+		select * from admin order by midx desc
+	</select>
+	
+	<update id="updateMcheck">
+	    update admin set mcheck = #{mcheck} where midx = #{midx}
+	</update>
+
+</mapper>

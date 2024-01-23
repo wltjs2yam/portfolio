@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin.mapper.NoticeMapper">
+
+<select id="getNoticeList" resultType="NoticeVo">
+select * from noticewrite order by mcheck desc, midx desc
+</select>
+
+<!-- 공지사항 조회수 -->
+<update id="updateView">
+update noticewrite set mviews = mviews+1 where midx = #{midx}
+</update> 
+ 
+
+
+<select id ="noticeView" resultType="admin.domain.NoticeVo">
+select * from noticewrite where midx = #{midx}
+</select>
+
+<update id="noticeFile">
+update noticewrite set mcheck =#{mcheck}, mtitle =#{mtitle}, file_name =#{mfile}, mtext =#{mtext} where midx =#{midx}
+</update>
+
+<!-- 항공 코드 등록 페이지 -->
+<insert id="newCode">
+insert into air_code values ('0',#{airplane},#{airname},#{aircode},#{airflight},#{airuse},now())
+</insert>
+
+<!-- 항공편 등록 페이지 -->
+<insert id="airPlane">
+insert into air_plane values ('0',#{aidx},#{aircode},#{start_point},#{end_point},#{seat_int},#{seat},#{air_use},now())
+</insert>
+
+
+<!-- FAQ 게시글 리스트 -->
+<select id="all_member" parameterType="String" resultType="FaqVo">
+select fidx,ftitle,fwriter,ftext,fdate from faq order by fidx desc
+</select>
+
+<!-- 항공편 등록 페이지 -->
+<select id="newCodeList" resultType="AirCodeVo">
+select * from air_code
+</select>
+
+<!-- 항공편 등록에서 option 태그 -->
+<select id="codeListOption" resultType="AirCodeVo">
+select airplane,airname,aircode,airflight from air_code
+</select>
+
+<!-- 공지사항 글쓰기 페이지 -->
+<insert id="noticeWrite" parameterType="admin.dao" useGeneratedKeys="true" keyProperty="midx">
+insert into noticewrite (midx,mcheck,mtitle,mname,mfile,mtext,mdate,file_name,mviews)
+values ('0',#{mcheck},#{mtitle},#{mname},'',#{mtext},now(),#{file_name},'0')
+</insert>
+
+<!-- 공지사항 삭제 -->
+<delete id="noticeDelete">
+delete from noticewrite where midx in (#{midx})
+</delete>
+
+<!-- 항공코드 삭제 -->
+<delete id="airCodeDelete">
+delete from air_code where aidx in (#{aidx})
+</delete>
+
+<!-- 항공 코드 리스트 -->
+<select id="codeList" resultType="AirCodeVo">
+select * from air_code order by aidx desc 
+</select>
+
+<!-- 항공 코드 보기및 수정 -->
+<select id="airCodeModify" resultType="AirCodeVo">
+select * from air_code where aidx = #{aidx}
+</select>
+
+<!-- 항공 코드 수정 완료 -->
+<update id="airCodeModifyOk">
+update air_code set airplane =#{airplane}, airname=#{airname}, aircode=#{aircode}, airflight=#{airflight}, airuse=#{airuse} where aidx =#{aidx}
+</update>
+
+<!-- FAQ 글쓰기 페이지 -->
+<insert id="faqWrite">
+insert into faq (fidx, ftitle, fwriter, ftext, fdate)
+values ('0', #{ftitle}, #{fwriter}, #{ftext}, now())
+</insert>
+
+<!-- FAQ 리스트 페이지 -->
+<select id="faqWriteList" resultType="FaqVo">
+select * from faq order by fidx desc
+</select>
+
+<!-- FAQ 보기-->
+<select id="faqView" resultType="FaqVo">
+select * from faq where fidx = #{fidx}
+</select>
+
+<!-- FAQ 수정 -->
+<update id="faqUpdate">
+update faq set ftitle =#{ftitle}, ftext=#{ftext} where fidx =#{fidx}
+</update>
+
+<!-- FAQ 삭제 -->
+<delete id="faqDelete">
+delete from faq where fidx = #{aa}
+</delete>
+
+
+<!-- FAQ 검색 -->
+<select id="faqSearch" parameterType="Map" resultType="FaqVo">
+select * from faq where ftext like concat('%',#{search},'%') or ftitle like concat('%',#{search},'%') order by fidx desc
+</select>
+
+<!-- 예매리스트 출력 -->
+<select id="payList" resultType="PayListVo" parameterType="String">
+select * from paylist order by aidx desc
+</select>
+
+<!-- 항공코드 검색 -->
+<select id="airCodeSearch" parameterType="Map" resultType="AirCodeVo">
+select * from air_code 
+<where>
+<if test="part==1" >
+airname like concat('%',#{search},'%')   
+</if>
+<if test="part==2">
+aircode like concat('%',#{search},'%') 
+</if>
+</where>
+order by aidx desc
+</select>
+
+<!-- 예매리스트 검색 -->
+<select id="payListSearch" parameterType="Map" resultType="PayListVo">
+select * from paylist 
+<where>
+<if test="part==1" >
+aname like concat('%',#{search},'%')   
+</if>
+<if test="part==2">
+atel like concat('%',#{search},'%')
+</if>
+</where>
+</select>
+
+
+<!-- 예매 취소 -->
+<delete id="payDelete">
+delete from paylist where aidx = #{aidx}
+</delete>
+</mapper>
